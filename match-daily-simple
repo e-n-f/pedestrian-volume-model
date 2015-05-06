@@ -29,7 +29,7 @@ while (<IN>) {
 }
 close(IN);
 
-open(IN, "all-employment");
+open(IN, "gzip -dc all-employment.gz |");
 while (<IN>) {
 	chomp;
 	@fields = split(/,/);
@@ -65,7 +65,7 @@ while (<IN>) {
 
 				for $radius (1320) {
 					if ($d < $radius) {
-						for $field (2, 58) {
+						for ($field = 2; $field <= 59; $field++) {
 							$sum{$cand}{$field}{$radius} += $fields[$field - 1];
 						}
 						$count{$cand}{$radius} += 1;
@@ -77,12 +77,16 @@ while (<IN>) {
 }
 
 for $where (keys(%sum)) {
-	printf("%s %d", $where, $walk{$where});
+	printf("%d", $walk{$where});
 
 	for $radius (1320) {
 		$scale = 1320 * 1320 / ($radius * $radius);
-		printf(" %f %f", $sum{$where}{2}{$radius} * $scale, $sum{$where}{58}{$radius} * $scale);
+		for ($field = 2; $field <= 59; $field++) {
+			printf(" %f", $sum{$where}{$field}{$radius} * $scale);
+		}
+
 		printf(" %d", $count{$where}{$radius});
+		print " $where";
 	}
 
 	printf("\n");
