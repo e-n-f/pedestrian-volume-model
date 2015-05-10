@@ -79,11 +79,15 @@ while (<IN>) {
 				$d = int($d / $foot);
 
 				for $radius (1320) {
-					if ($d < $radius) {
+					if ($d < 3 * $radius) {
+						$weight = 1 / ($radius * sqrt(2 * $pi)) * exp(- ($d * $d) / (2 * $radius * $radius));
+
+						# print STDERR "distance $distance weight $weight\n";
+
 						for ($field = 2; $field <= 59; $field++) {
-							$sum{$cand}{$field}{$radius} += $fields[$field - 1];
+							$sum{$cand}{$field}{$radius} += $fields[$field - 1] * $weight;
 						}
-						$count{$cand}{$radius} += 1;
+						$count{$cand}{$radius} += $weight;
 					}
 				}
 			}
