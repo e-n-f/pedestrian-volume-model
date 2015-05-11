@@ -13,7 +13,12 @@ f(x, y, t) = \
 		abs(mixed_use_wt) * (exp(x) ** work_mu_exp * exp(y) ** home_mu_exp)) + \
 	intercept
 
-fit f(x, y, t) "daily-simple" using (log($2 + epsilon)):(log($58 + epsilon)):($61):(log($1 + epsilon)):(1) via work_weight, home_weight, mixed_use_wt, work_exp, home_exp, work_mu_exp, home_mu_exp, intercept, split_weight
+fit f(x, y, t) "daily-simple" using (log($2 + epsilon)):(log($58 + epsilon)):($61):(log($1 + epsilon)):(1) via \
+	split_weight, \
+	work_weight, work_exp, \
+	home_weight, home_exp, \
+	mixed_use_wt, work_mu_exp, home_mu_exp, \
+	intercept
 
 stats "daily-simple" using ((f(log($2 + epsilon), log($58 + epsilon), $61))):(log($1))
 set logscale xy

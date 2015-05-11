@@ -1,0 +1,50 @@
+#!/usr/bin/perl
+
+use strict;
+
+my $epsilon = 1e-10;
+
+my $split_weight    = -1.38458;
+my $work_weight     = 1.97867;
+my $work_exp        = 1.18129;
+my $home_weight     = 3.10264;
+my $home_exp        = 1.36906;
+my $mixed_use_wt    = 1.39089;
+my $work_mu_exp     = 0.781875;
+my $home_mu_exp     = 0.692484;
+my $intercept       = 4.26427;
+
+sub fpow {
+	my ($base, $exp) = @_;
+
+	if ($base == 0) {
+		return 0;
+	}
+
+	return exp(log($base) * $exp);
+}
+
+sub f {
+	my ($x, $y, $t) = @_;
+
+	# print "got $x $y $t\n";
+
+	return
+        $split_weight * ($t - 0.75) +
+        log(
+                abs($work_weight) * fpow(exp($x), $work_exp) +
+                abs($home_weight) * fpow(exp($y), $home_exp) +
+                abs($mixed_use_wt) * (fpow(exp($x), $work_mu_exp) * fpow(exp($y), $home_mu_exp))) +
+        $intercept;
+}
+
+while (<>) {
+	chomp;
+	my @fields = split(/ /);
+
+	my $actual = ($fields[0]);
+	my $model = exp(f(log($fields[1] + $epsilon), log($fields[57] + $epsilon), $fields[60]));
+
+	printf("%.6f ", $actual / $model);
+	print "$actual $model $fields[61]\n";
+}
