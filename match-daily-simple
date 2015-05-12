@@ -95,7 +95,7 @@ while (<IN>) {
 	}
 }
 
-for $where (keys(%sum)) {
+for $where (sort(keys(%sum))) {
 	printf("%d", $walk{$where});
 
 	for $radius (1320) {
