@@ -31,9 +31,8 @@ while (<IN>) {
 
 	next if $walk == 0;
 
-	if ($walk > $walk{"$lat,$lon"}) {
-		$walk{"$lat,$lon"} = $walk;
-	}
+	$walk{"$lat,$lon"} += log($walk);
+	$walkcount{"$lat,$lon"} += 1;
 
 	$split{"$lat,$lon"} = $split;
 
@@ -43,6 +42,11 @@ while (<IN>) {
 	push @{$near{$a}{$o}}, "$lat,$lon";
 }
 close(IN);
+
+# geometric mean if there are multiple reports for same location
+for $w (keys(%walk)) {
+	$walk{$w} = exp($walk{$w} / $walkcount{$w});
+}
 
 open(IN, "gzip -dc all-employment.gz |");
 while (<IN>) {
