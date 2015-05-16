@@ -8,11 +8,11 @@ set ylabel "Measured daily pedestrian volume"
 f(x, y, t, u, v) = \
 	split_weight * (t - 0.75) + \
 	log( \
-		abs(work_weight) * exp(x) ** work_exp + \
-		abs(home_weight) * exp(y) ** home_exp + \
-		abs(retail_weight) * exp(u) ** retail_exp + \
-		abs(school_weight) * exp(v) ** school_exp + \
-		abs(mixed_use_wt) * (exp(x) ** work_mu_exp * exp(y) ** home_mu_exp)) + \
+		(work_weight) * exp(x) ** work_exp + \
+		(home_weight) * exp(y) ** home_exp + \
+		(retail_weight) * exp(u) ** retail_exp + \
+		(school_weight) * exp(v) ** school_exp + \
+		(mixed_use_wt) * (exp(x) ** work_mu_exp * exp(y) ** home_mu_exp)) + \
 	intercept
 
 fit f(x, y, t, u, v) "daily-simple" using (log($2 + epsilon)):(log($58 + epsilon)):($61):(log($15 + $26 + $27 + epsilon)):(log($62 + epsilon)):(log($1 + epsilon)):(1) via \
