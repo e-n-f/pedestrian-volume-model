@@ -82,7 +82,7 @@ while (<IN>) {
 			if ($d < $bucket) {
 				$d = int($d / $foot);
 
-				for $radius (1320) {
+				for $radius (1000) {
 					if ($d < 3 * $radius) {
 						$weight = 1 / ($radius * sqrt(2 * $pi)) * exp(- ($d * $d) / (2 * $radius * $radius));
 
@@ -137,7 +137,7 @@ while (<IN>) {
 			if ($d < $bucket) {
 				$d = int($d / $foot);
 
-				for $radius (1320) {
+				for $radius (1000) {
 					if ($d < 3 * $radius) {
 						$weight = 1 / ($radius * sqrt(2 * $pi)) * exp(- ($d * $d) / (2 * $radius * $radius));
 
@@ -154,7 +154,7 @@ while (<IN>) {
 for $where (sort(keys(%sum))) {
 	printf("%d", $walk{$where});
 
-	for $radius (1320) {
+	for $radius (1000) {
 		for ($field = 2; $field <= 59; $field++) {
 			printf(" %f", $sum{$where}{$field}{$radius});
 		}
