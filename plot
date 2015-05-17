@@ -16,7 +16,6 @@ f(x1, x2, x3, x4, x5, x6, x7) = \
 		abs(school_weight) * exp(x5) ** school_exp + \
 		abs(teach_weight) * exp(x7) ** teach_exp + \
 	0) + \
-	split_weight * (x6 - 0.75) + \
 	intercept
 
 fit f(x1, x2, x3, x4, x5, x6, x7) "daily-simple" using (log($2 + epsilon)):(log($58 + epsilon)):(log($15 + epsilon)):(log($26 + epsilon)):(log($62 + epsilon)):($61):(log($23 + epsilon)):(log($1 + epsilon)):(1) via \
@@ -25,7 +24,6 @@ fit f(x1, x2, x3, x4, x5, x6, x7) "daily-simple" using (log($2 + epsilon)):(log(
 	retail_weight, retail_exp, \
 	accomm_weight, accomm_exp, \
 	school_weight, school_exp, \
-	split_weight, \
 	teach_weight, teach_exp, \
 	intercept
 
