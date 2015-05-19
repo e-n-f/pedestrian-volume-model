@@ -1,6 +1,6 @@
 set terminal postscript
 
-epsilon = 1e-10
+epsilon = 1e-3
 
 set xlabel "Predicted daily pedestrian volume"
 set ylabel "Measured daily pedestrian volume"
@@ -18,7 +18,7 @@ f(work, home, retail, accomm, school, teach) = \
 	0) + \
 	intercept
 
-fit f(work, home, retail, accomm, school, teach) "daily-simple" using (log($2 + epsilon)):(log($58 + epsilon)):(log($15 + epsilon)):(log($26 + epsilon)):(log($62 + epsilon)):(log($23 + epsilon)):(log($1 + epsilon)):(1) via \
+fit f(work, home, retail, accomm, school, teach) "daily-simple" using (log($2 + epsilon)):(log($58 + epsilon)):(log($15 + epsilon)):(log($26 + epsilon)):(log($62 + epsilon)):(log($23 + epsilon)):(log($1 + epsilon)) via \
 	work_weight, work_exp, \
 	home_exp, \
 	retail_weight, retail_exp, \
