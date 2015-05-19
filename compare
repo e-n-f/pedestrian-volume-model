@@ -4,15 +4,18 @@ use strict;
 
 my $epsilon = 1e-10;
 
-my $split_weight    = -1.38458;
-my $work_weight     = 1.97867;
-my $work_exp        = 1.18129;
-my $home_weight     = 3.10264;
-my $home_exp        = 1.36906;
-my $mixed_use_wt    = 1.39089;
-my $work_mu_exp     = 0.781875;
-my $home_mu_exp     = 0.692484;
-my $intercept       = 4.26427;
+my $work_weight     = 0.621569;
+my $work_exp        = 1.05523;
+my $home_exp        = 1.35907;
+my $retail_weight   = 4.91751;
+my $retail_exp      = 2.89947;
+my $accomm_weight   = 10.2007;
+my $accomm_exp      = 1.20083;
+my $school_weight   = 1.59076;
+my $school_exp      = 1.08525;
+my $teach_weight    = 1.7561;
+my $teach_exp       = 0.969141;
+my $intercept       = 5.47161;
 
 sub fpow {
 	my ($base, $exp) = @_;
@@ -25,16 +28,17 @@ sub fpow {
 }
 
 sub f {
-	my ($x, $y, $t) = @_;
-
-	# print "got $x $y $t\n";
+	my ($work, $home, $retail, $accomm, $school, $teach) = @_;
 
 	return
-        $split_weight * ($t - 0.75) +
         log(
-                abs($work_weight) * fpow(exp($x), $work_exp) +
-                abs($home_weight) * fpow(exp($y), $home_exp) +
-                abs($mixed_use_wt) * (fpow(exp($x), $work_mu_exp) * fpow(exp($y), $home_mu_exp))) +
+                abs($work_weight) * fpow(exp($work), $work_exp) +
+                fpow(exp($home), $home_exp) +
+                abs($retail_weight) * fpow(exp($retail), $retail_exp) +
+                abs($accomm_weight) * fpow(exp($accomm), $accomm_exp) +
+                abs($school_weight) * fpow(exp($school), $school_exp) +
+                abs($teach_weight) * fpow(exp($teach), $teach_exp) +
+	0) +
         $intercept;
 }
 
@@ -43,8 +47,8 @@ while (<>) {
 	my @fields = split(/ /);
 
 	my $actual = ($fields[0]);
-	my $model = exp(f(log($fields[1] + $epsilon), log($fields[57] + $epsilon), $fields[60]));
+	my $model = exp(f(log($fields[1] + $epsilon), log($fields[57] + $epsilon), log($fields[14] + $epsilon), log($fields[25] + $epsilon), log($fields[61] + $epsilon), log($fields[22] + $epsilon)));
 
 	printf("%.6f ", $actual / $model);
-	print "$actual $model $fields[61]\n";
+	print "$actual $model $fields[62]\n";
 }
