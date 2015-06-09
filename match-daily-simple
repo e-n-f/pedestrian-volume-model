@@ -32,6 +32,7 @@ while (<IN>) {
 	next if $walk == 0;
 
 	$walk{"$lat,$lon"} += log($walk);
+	$name{"$lat,$lon"} = $name;
 	$walkcount{"$lat,$lon"} += 1;
 
 	$split{"$lat,$lon"} = $split;
@@ -83,8 +84,8 @@ while (<IN>) {
 				$d = int($d / $foot);
 
 				for $radius (1000) {
-					if ($d < 3 * $radius) {
-						$weight = 1 / ($radius * sqrt(2 * $pi)) * exp(- ($d * $d) / (2 * $radius * $radius));
+					if ($d < $radius) {
+						$weight = 1;
 
 						# print STDERR "distance $distance weight $weight\n";
 
@@ -107,6 +108,7 @@ while (<IN>) {
 
 	($lat, $lon) = ($fields[24], $fields[25]);
 	$attendance = $fields[298];
+	$faculty = $fields[44];
 
 	if ($seq++ % 10000 == 0) {
 		printf STDERR ("school %.2f\r", $seq / 102894 * 100);
@@ -138,12 +140,13 @@ while (<IN>) {
 				$d = int($d / $foot);
 
 				for $radius (1000) {
-					if ($d < 3 * $radius) {
-						$weight = 1 / ($radius * sqrt(2 * $pi)) * exp(- ($d * $d) / (2 * $radius * $radius));
+					if ($d < $radius) {
+						$weight = 1;
 
 						# print STDERR "distance $distance weight $weight\n";
 
 						$sum{$cand}{62}{$radius} += $attendance * $weight;
+						$sum{$cand}{63}{$radius} += $faculty * $weight;
 					}
 				}
 			}
@@ -163,8 +166,9 @@ for $where (sort(keys(%sum))) {
 		printf(" %.5f", $split{$where});
 
 		printf(" %f", $sum{$where}{62}{$radius});
+		printf(" %f", $sum{$where}{63}{$radius});
 
-		print " $where";
+		print " $where $name{$where}";
 	}
 
 	printf("\n");
