@@ -30,12 +30,14 @@ while (<IN>) {
 	}
 
 	next if $walk == 0;
+	next if $drive == 0;
 
 	$walk{"$lat,$lon"} += log($walk);
 	$name{"$lat,$lon"} = $name;
 	$walkcount{"$lat,$lon"} += 1;
 
 	$split{"$lat,$lon"} = $split;
+	$drive{"$lat,$lon"} = $drive;
 
 	$a = int($lat / $bucket);
 	$o = int($lon / $bucket);
@@ -167,6 +169,8 @@ for $where (sort(keys(%sum))) {
 
 		printf(" %f", $sum{$where}{62}{$radius});
 		printf(" %f", $sum{$where}{63}{$radius});
+
+		printf(" %.5f", $drive{$where});
 
 		print " $where $name{$where}";
 	}
