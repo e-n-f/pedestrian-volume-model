@@ -15,7 +15,8 @@ f(work, home, retail, accomm, school, teach, drive, split) = \
 		(accomm_weight) * exp(accomm) ** accomm_exp + \
 		(school_weight) * exp(school) ** school_exp + \
 		(teach_weight) * exp(teach) ** teach_exp + \
-	0) * ((drive_weight) * exp(drive) ** drive_exp)) * scale + \
+		(drive_weight) * exp(drive) ** drive_exp + \
+	0)) * scale + \
 	split_weight * (split - 0.75) + \
 	intercept
 
