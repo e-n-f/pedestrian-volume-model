@@ -25,8 +25,12 @@ while (<IN>) {
 	if ($drive == 0) {
 		$split = 0.75;
 	} elsif ($ns > $ew) {
+		$major = $ns;
+		$minor = $ew;
 		$split = $ns / $drive;
 	} else {
+		$major = $ew;
+		$minor = $ns;
 		$split = $ew / $drive;
 	}
 
@@ -39,6 +43,8 @@ while (<IN>) {
 
 	$split{"$lat,$lon"} = $split;
 	$drive{"$lat,$lon"} = $drive;
+	$major{"$lat,$lon"} = $major;
+	$minor{"$lat,$lon"} = $minor;
 
 	$a = int($lat / $bucket);
 	$o = int($lon / $bucket);
@@ -172,6 +178,8 @@ for $where (sort(keys(%sum))) {
 		printf(" %f", $sum{$where}{63}{$radius});
 
 		printf(" %.5f", $drive{$where});
+		printf(" %.5f", $major{$where});
+		printf(" %.5f", $minor{$where});
 
 		print " $where $name{$where}";
 	}

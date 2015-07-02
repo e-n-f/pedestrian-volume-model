@@ -5,9 +5,9 @@ epsilon = 1e-3
 set xlabel "Predicted daily pedestrian volume"
 set ylabel "Measured daily pedestrian volume"
 
-set dummy work, home, retail, accomm, school, teach, drive, split
+set dummy work, home, retail, accomm, school, teach, major, minor
 
-f(work, home, retail, accomm, school, teach, drive, split) = \
+f(work, home, retail, accomm, school, teach, major, minor) = \
 	log(abs( \
 		(work_weight) * exp(work) ** work_exp + \
 		exp(home) ** home_exp + \
@@ -15,20 +15,19 @@ f(work, home, retail, accomm, school, teach, drive, split) = \
 		(accomm_weight) * exp(accomm) ** accomm_exp + \
 		(school_weight) * exp(school) ** school_exp + \
 		(teach_weight) * exp(teach) ** teach_exp + \
-		(drive_weight) * exp(drive) ** drive_exp + \
+		(minor_weight) * exp(minor) ** minor_exp + \
 	0)) * scale + \
-	split_weight * (split - 0.75) + \
 	intercept
 
-fit f(work, home, retail, accomm, school, teach, drive, split) "daily-simple" using \
+fit f(work, home, retail, accomm, school, teach, major, minor) "daily-simple" using \
 		(log($2 + epsilon)): \
 		(log($58 + epsilon)): \
 		(log($15 + epsilon)): \
 		(log($26 + epsilon)): \
 		(log($62 + epsilon)): \
 		(log($23 + epsilon)): \
-		(log($64 + epsilon)): \
-		($61): \
+		(log($65 + epsilon)): \
+		(log($66 + epsilon)): \
 		(log($1 + epsilon)) \
 	via \
 		work_weight, work_exp, \
@@ -37,8 +36,7 @@ fit f(work, home, retail, accomm, school, teach, drive, split) "daily-simple" us
 		accomm_weight, accomm_exp, \
 		school_weight, school_exp, \
 		teach_weight, teach_exp, \
-		drive_weight, drive_exp, \
-		split_weight, \
+		minor_weight, minor_exp, \
 		scale, \
 		intercept
 
@@ -49,8 +47,8 @@ stats "daily-simple" using (f( \
 		log($26 + epsilon), \
 		log($62 + epsilon), \
 		log($23 + epsilon), \
-		log($64 + epsilon), \
-		$61 \
+		log($65 + epsilon), \
+		log($66 + epsilon) \
 	)):(log($1 + epsilon))
 set logscale xy
 
@@ -64,6 +62,6 @@ plot "daily-simple" using (exp(f( \
 		log($26 + epsilon), \
 		log($62 + epsilon), \
 		log($23 + epsilon), \
-		log($64 + epsilon), \
-		$61 \
+		log($65 + epsilon), \
+		log($66 + epsilon) \
 	))):(($1 + epsilon)) with points ps .3, work title ""
