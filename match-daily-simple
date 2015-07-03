@@ -34,28 +34,33 @@ while (<IN>) {
 		$split = $ew / $drive;
 	}
 
-	next if $walk == 0;
-	next if $drive == 0;
+	if ($walk != 0) {
+		$walk{"$lat,$lon"} += log($walk);
+		$name{"$lat,$lon"} = $name;
+		$walkcount{"$lat,$lon"} += 1;
 
-	$walk{"$lat,$lon"} += log($walk);
-	$name{"$lat,$lon"} = $name;
-	$walkcount{"$lat,$lon"} += 1;
+		$a = int($lat / $bucket);
+		$o = int($lon / $bucket);
 
-	$split{"$lat,$lon"} = $split;
-	$drive{"$lat,$lon"} = $drive;
-	$major{"$lat,$lon"} = $major;
-	$minor{"$lat,$lon"} = $minor;
+		push @{$near{$a}{$o}}, "$lat,$lon";
+	}
 
-	$a = int($lat / $bucket);
-	$o = int($lon / $bucket);
-
-	push @{$near{$a}{$o}}, "$lat,$lon";
+	if ($drive != 0) {
+		$split{"$lat,$lon"} = $split;
+		$drive{"$lat,$lon"} = $drive;
+		$major{"$lat,$lon"} = $major;
+		$minor{"$lat,$lon"} = $minor;
+	}
 }
 close(IN);
 
 # geometric mean if there are multiple reports for same location
 for $w (keys(%walk)) {
 	$walk{$w} = exp($walk{$w} / $walkcount{$w});
+
+	if ($drive{$w} == 0) {
+		delete $walk{$w};
+	}
 }
 
 open(IN, "gzip -dc all-employment.gz |");
@@ -100,6 +105,7 @@ while (<IN>) {
 
 						for ($field = 2; $field <= 59; $field++) {
 							$sum{$cand}{$field}{$radius} += $fields[$field - 1] * $weight;
+							$state{$cand} = $fields[0];
 						}
 						$count{$cand}{$radius} += $weight;
 					}
@@ -164,6 +170,9 @@ while (<IN>) {
 }
 
 for $where (sort(keys(%sum))) {
+	next if ($walk{$where} == 0 || $drive{$where} == 0);
+	next if $state{$where} =~ /^25/; # massachusetts lehd broken
+
 	printf("%d", $walk{$where});
 
 	for $radius (1000) {
