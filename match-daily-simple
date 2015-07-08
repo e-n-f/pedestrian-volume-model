@@ -23,6 +23,8 @@ while (<IN>) {
 	$drive = $ns + $ew;
 
 	if ($drive == 0) {
+		$major = 0;
+		$minor = 0;
 		$split = 0.75;
 	} elsif ($ns > $ew) {
 		$major = $ns;
@@ -45,25 +47,19 @@ while (<IN>) {
 		push @{$near{$a}{$o}}, "$lat,$lon";
 	}
 
-	if ($drive != 0) {
-		$split{"$lat,$lon"} = $split;
-		$drive{"$lat,$lon"} = $drive;
-		$major{"$lat,$lon"} = $major;
-		$minor{"$lat,$lon"} = $minor;
-	}
+	$split{"$lat,$lon"} = $split;
+	$drive{"$lat,$lon"} = $drive;
+	$major{"$lat,$lon"} = $major;
+	$minor{"$lat,$lon"} = $minor;
 }
 close(IN);
 
 # geometric mean if there are multiple reports for same location
 for $w (keys(%walk)) {
 	$walk{$w} = exp($walk{$w} / $walkcount{$w});
-
-	if ($drive{$w} == 0) {
-		delete $walk{$w};
-	}
 }
 
-open(IN, "gzip -dc all-employment.gz |");
+open(IN, "gzip -dc all-employment-2012.gz |");
 while (<IN>) {
 	chomp;
 	@fields = split(/,/);
@@ -170,7 +166,7 @@ while (<IN>) {
 }
 
 for $where (sort(keys(%sum))) {
-	next if ($walk{$where} == 0 || $drive{$where} == 0);
+	next if ($walk{$where} == 0); # || $drive{$where} == 0);
 	next if $state{$where} =~ /^25/; # massachusetts lehd broken
 
 	printf("%d", $walk{$where});

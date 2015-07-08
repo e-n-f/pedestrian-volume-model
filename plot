@@ -15,7 +15,6 @@ f(work, home, retail, accomm, school, teach, major, minor) = \
 		(accomm_weight) * exp(accomm) ** accomm_exp + \
 		(school_weight) * exp(school) ** school_exp + \
 		(teach_weight) * exp(teach) ** teach_exp + \
-		(minor_weight) * exp(minor) ** minor_exp + \
 	0)) * scale + \
 	intercept
 
@@ -36,7 +35,6 @@ fit f(work, home, retail, accomm, school, teach, major, minor) "daily-simple" us
 		accomm_weight, accomm_exp, \
 		school_weight, school_exp, \
 		teach_weight, teach_exp, \
-		minor_weight, minor_exp, \
 		scale, \
 		intercept
 
