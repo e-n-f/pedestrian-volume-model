@@ -94,8 +94,8 @@ while (<IN>) {
 				$d = int($d / $foot);
 
 				for $radius (1000) {
-					if ($d < $radius) {
-						$weight = 1;
+					if ($d < 3 * $radius) {
+						$weight = 1 / ($radius * sqrt(2 * $pi)) * exp(- ($d * $d) / (2 * $radius * $radius));
 
 						# print STDERR "distance $distance weight $weight\n";
 
@@ -151,8 +151,8 @@ while (<IN>) {
 				$d = int($d / $foot);
 
 				for $radius (1000) {
-					if ($d < $radius) {
-						$weight = 1;
+					if ($d < 3 * $radius) {
+						$weight = 1 / ($radius * sqrt(2 * $pi)) * exp(- ($d * $d) / (2 * $radius * $radius));
 
 						# print STDERR "distance $distance weight $weight\n";
 
