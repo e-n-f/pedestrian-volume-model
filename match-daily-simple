@@ -10,7 +10,7 @@ open(IN, "daily.csv");
 while (<IN>) {
 	chomp;
 	($id, $name, $id2, $date, $time, @fields) = split(/,/);
-	next if /extrap/;
+	# next if /extrap/;
 	next if $fields[20] eq "";
 
 	$lat = $fields[20];
