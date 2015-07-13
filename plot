@@ -13,7 +13,7 @@ f(area, work, home, retail, accomm, school, teach, major, minor) = \
 		(exp(home) / exp(area)) ** home_exp + \
 		(retail_weight) * (exp(retail) / exp(area)) ** retail_exp + \
 		(accomm_weight) * (exp(accomm) / exp(area)) ** accomm_exp + \
-		(school_weight) * (exp(school) / exp(area)) ** school_exp + \
+		(school_weight) * (exp(school) / 200) ** school_exp + \
 		(teach_weight) * (exp(teach) / exp(area)) ** teach_exp + \
 	0)) * scale + \
 	intercept
