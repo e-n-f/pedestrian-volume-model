@@ -18,6 +18,20 @@ f(area, work, home, retail, accomm, school, teach, major, minor) = \
 	0)) * scale + \
 	intercept
 
+work_weight     = 0.24257
+work_exp        = 0.60256
+home_exp        = 0.694629
+retail_weight   = 5.89859
+retail_exp      = 1.09033
+accomm_weight   = 1.06178
+accomm_exp      = 0.671372
+school_weight   = 0.499471
+school_exp      = 0.655078
+teach_weight    = 0.0156911
+teach_exp       = 0.0986928
+scale           = 2.78669
+intercept       = 14.9351
+
 fit f(area, work, home, retail, accomm, school, teach, major, minor) "daily-simple" using \
 		(log($56 + epsilon)): \
 		(log($2 + epsilon)): \
