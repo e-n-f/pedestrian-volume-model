@@ -176,7 +176,7 @@ for $where (sort(keys(%sum))) {
 			printf(" %f", $sum{$where}{$field}{$radius});
 		}
 
-		printf(" %d", $count{$where}{$radius});
+		printf(" %.16f", $count{$where}{$radius});
 		printf(" %.5f", $split{$where});
 
 		printf(" %f", $sum{$where}{62}{$radius});
