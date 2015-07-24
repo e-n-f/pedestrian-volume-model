@@ -13,15 +13,15 @@ f(area, work, home, retail, accomm, school, teach, major, blocks) = \
 			intercept * \
 			( \
 				abs( \
-					(work_weight) * (exp(work) / exp(area)) ** work_exp + \
-					(exp(home) / exp(area)) ** home_exp + \
-					(retail_weight) * (exp(retail) / exp(area)) ** retail_exp + \
-					(accomm_weight) * (exp(accomm) / exp(area)) ** accomm_exp + \
-					(school_weight) * (exp(school) / 200) ** school_exp + \
-					(teach_weight) * (exp(teach) / exp(area)) ** teach_exp + \
+					work_weight * (work / area) ** work_exp + \
+					(home / area) ** home_exp + \
+					retail_weight * (retail / area) ** retail_exp + \
+					accomm_weight * (accomm / area) ** accomm_exp + \
+					school_weight * (school / 200) ** school_exp + \
+					teach_weight * (teach / area) ** teach_exp + \
 					0 \
 				) * \
-				(exp(blocks) / exp(area)) ** blocks_exp \
+				(blocks / area) ** blocks_exp \
 			) ** scale \
 		) \
 	)
@@ -42,15 +42,15 @@ scale           = 2.56183
 intercept       = 3.24574e+07
 
 fit f(area, work, home, retail, accomm, school, teach, major, blocks) "daily-simple" using \
-		(log($56 + epsilon)): \
-		(log($2 + epsilon)): \
-		(log($58 + epsilon)): \
-		(log($15 + epsilon)): \
-		(log($26 + epsilon)): \
-		(log($62 + epsilon)): \
-		(log($23 + epsilon)): \
-		(log($65 + epsilon)): \
-		(log($60 + epsilon)): \
+		($56 + epsilon): \
+		($2  + epsilon): \
+		($58 + epsilon): \
+		($15 + epsilon): \
+		($26 + epsilon): \
+		($62 + epsilon): \
+		($23 + epsilon): \
+		($65 + epsilon): \
+		($60 + epsilon): \
 		(log($1 + epsilon)) \
 	via \
 		work_weight, work_exp, \
@@ -64,29 +64,28 @@ fit f(area, work, home, retail, accomm, school, teach, major, blocks) "daily-sim
 		intercept
 
 stats "daily-simple" using (f( \
-		log($56 + epsilon), \
-		log($2 + epsilon), \
-		log($58 + epsilon), \
-		log($15 + epsilon), \
-		log($26 + epsilon), \
-		log($62 + epsilon), \
-		log($23 + epsilon), \
-		log($65 + epsilon), \
-		log($60 + epsilon) \
+		($56 + epsilon), \
+		($2 + epsilon), \
+		($58 + epsilon), \
+		($15 + epsilon), \
+		($26 + epsilon), \
+		($62 + epsilon), \
+		($23 + epsilon), \
+		($65 + epsilon), \
+		($60 + epsilon) \
 	)):(log($1 + epsilon))
-set logscale xy
 
 set logscale xy
 set xrange [1:500000]
 set yrange [1:500000]
 plot "daily-simple" using (exp(f( \
-		log($56 + epsilon), \
-		log($2 + epsilon), \
-		log($58 + epsilon), \
-		log($15 + epsilon), \
-		log($26 + epsilon), \
-		log($62 + epsilon), \
-		log($23 + epsilon), \
-		log($65 + epsilon), \
-		log($60 + epsilon) \
+		($56 + epsilon), \
+		($2 + epsilon), \
+		($58 + epsilon), \
+		($15 + epsilon), \
+		($26 + epsilon), \
+		($62 + epsilon), \
+		($23 + epsilon), \
+		($65 + epsilon), \
+		($60 + epsilon) \
 	))):(($1 + epsilon)) with points ps .3, area title ""
