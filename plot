@@ -12,13 +12,12 @@ f(area, work, home, retail, accomm, school, teach, major, blocks) = \
 		log( \
 			intercept * \
 			( \
-				abs( \
+				( \
 					work_weight * (work / area) ** work_exp + \
 					(home / area) ** home_exp + \
 					retail_weight * (retail / area) ** retail_exp + \
 					accomm_weight * (accomm / area) ** accomm_exp + \
 					school_weight * (school / 200) ** school_exp + \
-					teach_weight * (teach / area) ** teach_exp + \
 					0 \
 				) * \
 				(blocks / area) ** blocks_exp \
@@ -42,15 +41,15 @@ scale           = 2.56183
 intercept       = 3.24574e+07
 
 fit f(area, work, home, retail, accomm, school, teach, major, blocks) "daily-simple" using \
-		($56 + epsilon): \
-		($2  + epsilon): \
-		($58 + epsilon): \
-		($15 + epsilon): \
-		($26 + epsilon): \
-		($62 + epsilon): \
-		($23 + epsilon): \
-		($65 + epsilon): \
-		($60 + epsilon): \
+		($56): \
+		($2 ): \
+		($58): \
+		($15): \
+		($26): \
+		($62): \
+		($23): \
+		($65): \
+		($60): \
 		(log($1 + epsilon)) \
 	via \
 		work_weight, work_exp, \
@@ -58,34 +57,33 @@ fit f(area, work, home, retail, accomm, school, teach, major, blocks) "daily-sim
 		retail_weight, retail_exp, \
 		accomm_weight, accomm_exp, \
 		school_weight, school_exp, \
-		teach_weight, teach_exp, \
 		blocks_exp, \
 		scale, \
 		intercept
 
 stats "daily-simple" using (f( \
-		($56 + epsilon), \
-		($2 + epsilon), \
-		($58 + epsilon), \
-		($15 + epsilon), \
-		($26 + epsilon), \
-		($62 + epsilon), \
-		($23 + epsilon), \
-		($65 + epsilon), \
-		($60 + epsilon) \
+		($56), \
+		($2 ), \
+		($58), \
+		($15), \
+		($26), \
+		($62), \
+		($23), \
+		($65), \
+		($60) \
 	)):(log($1 + epsilon))
 
 set logscale xy
 set xrange [1:500000]
 set yrange [1:500000]
 plot "daily-simple" using (exp(f( \
-		($56 + epsilon), \
-		($2 + epsilon), \
-		($58 + epsilon), \
-		($15 + epsilon), \
-		($26 + epsilon), \
-		($62 + epsilon), \
-		($23 + epsilon), \
-		($65 + epsilon), \
-		($60 + epsilon) \
+		($56), \
+		($2 ), \
+		($58), \
+		($15), \
+		($26), \
+		($62), \
+		($23), \
+		($65), \
+		($60) \
 	))):(($1 + epsilon)) with points ps .3, area title ""
