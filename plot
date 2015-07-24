@@ -9,6 +9,7 @@ set dummy area, work, home, retail, accomm, school, teach, major, blocks
 
 f(area, work, home, retail, accomm, school, teach, major, blocks) = \
 	intercept * \
+	(blocks / area) ** blocks_exp * \
 	( \
 		( \
 			work_weight * (work / area) ** work_exp + \
@@ -17,22 +18,21 @@ f(area, work, home, retail, accomm, school, teach, major, blocks) = \
 			accomm_weight * (accomm / area) ** accomm_exp + \
 			school_weight * (school / 200) ** school_exp + \
 			0 \
-		) * \
-		(blocks / area) ** blocks_exp \
+		) \
 	) ** scale
 
-work_weight     = 0.197892
-work_exp        = 0.490142
-home_exp        = 0.69142
-retail_weight   = 52.1377
-retail_exp      = 1.45549
-accomm_weight   = 6.31868
-accomm_exp      = 0.957899
-school_weight   = 1.82011
-school_exp      = 0.871245
-blocks_exp      = 0.0975083
-scale           = 2.22845
-intercept       = 6.48681e+06
+work_weight     = 0.198099
+work_exp        = 0.48859
+home_exp        = 0.689972
+retail_weight   = 51.6771
+retail_exp      = 1.4533
+accomm_weight   = 6.36189
+accomm_exp      = 0.958225
+school_weight   = 1.82635
+school_exp      = 0.870793
+blocks_exp      = 0.217299
+scale           = 2.23325
+intercept       = 6.46957e+06
 
 fit log(f(area, work, home, retail, accomm, school, teach, major, blocks)) "daily-simple" using \
 		($56): \
