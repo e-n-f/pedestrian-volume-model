@@ -25,20 +25,18 @@ f(area, work, home, retail, accomm, school, teach, major, blocks) = \
 		) \
 	)
 
-work_weight     = 0.23769
-work_exp        = 0.63832
-home_exp        = 0.735989
-retail_weight   = 5.95748
-retail_exp      = 1.08711
-accomm_weight   = 0.979417
-accomm_exp      = 0.689884
-school_weight   = 0.636911
-school_exp      = 0.714566
-teach_weight    = 0.0130839
-teach_exp       = 0.0868445
-blocks_exp      = 0.100841
-scale           = 2.56183
-intercept       = 3.24574e+07
+work_weight     = 0.197892
+work_exp        = 0.490142
+home_exp        = 0.69142
+retail_weight   = 52.1377
+retail_exp      = 1.45549
+accomm_weight   = 6.31868
+accomm_exp      = 0.957899
+school_weight   = 1.82011
+school_exp      = 0.871245
+blocks_exp      = 0.0975083
+scale           = 2.22845
+intercept       = 6.48681e+06
 
 fit f(area, work, home, retail, accomm, school, teach, major, blocks) "daily-simple" using \
 		($56): \
@@ -50,7 +48,7 @@ fit f(area, work, home, retail, accomm, school, teach, major, blocks) "daily-sim
 		($23): \
 		($65): \
 		($60): \
-		(log($1 + epsilon)) \
+		(log($1)) \
 	via \
 		work_weight, work_exp, \
 		home_exp, \
@@ -71,7 +69,7 @@ stats "daily-simple" using (f( \
 		($23), \
 		($65), \
 		($60) \
-	)):(log($1 + epsilon))
+	)):(log($1))
 
 set logscale xy
 set xrange [1:500000]
@@ -86,4 +84,4 @@ plot "daily-simple" using (exp(f( \
 		($23), \
 		($65), \
 		($60) \
-	))):(($1 + epsilon)) with points ps .3, area title ""
+	))):(($1)) with points ps .3, area title ""
