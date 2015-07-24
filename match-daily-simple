@@ -6,7 +6,7 @@ $bucket = 5280 * $foot;
 
 $| = 1;
 
-open(IN, "daily.csv");
+open(IN, "../traffic/daily-traffic-counts/daily/daily.csv");
 while (<IN>) {
 	chomp;
 	($id, $name, $id2, $date, $time, @fields) = split(/,/);
