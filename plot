@@ -5,11 +5,12 @@ epsilon = 1e-3
 set xlabel "Predicted daily pedestrian volume"
 set ylabel "Measured daily pedestrian volume"
 
-set dummy area, work, home, retail, accomm, school, teach, major, blocks
+set dummy area, work, home, retail, accomm, school, teach, split, blocks
 
-f(area, work, home, retail, accomm, school, teach, major, blocks) = \
+f(area, work, home, retail, accomm, school, teach, split, blocks) = \
 	intercept * \
 	(blocks / area) ** blocks_exp * \
+	log(abs(2 - split) + epsilon) ** split_exp * \
 	( \
 		( \
 			work_weight * (work / area) ** work_exp + \
@@ -21,20 +22,21 @@ f(area, work, home, retail, accomm, school, teach, major, blocks) = \
 		) \
 	) ** scale
 
-work_weight     = 0.198099
-work_exp        = 0.48859
-home_exp        = 0.689972
-retail_weight   = 51.6771
-retail_exp      = 1.4533
-accomm_weight   = 6.36189
-accomm_exp      = 0.958225
-school_weight   = 1.82635
-school_exp      = 0.870793
-blocks_exp      = 0.217299
-scale           = 2.23325
-intercept       = 6.46957e+06
+work_weight     = 0.176085
+work_exp        = 0.494188
+home_exp        = 0.70727
+retail_weight   = 69.135
+retail_exp      = 1.54169
+accomm_weight   = 5.52831
+accomm_exp      = 0.949495
+school_weight   = 1.71035
+school_exp      = 0.876242
+blocks_exp      = 0.187143
+split_exp       = 0.192465
+scale           = 2.18694
+intercept       = 7.59384e+06
 
-fit log(f(area, work, home, retail, accomm, school, teach, major, blocks)) "daily-simple" using \
+fit log(f(area, work, home, retail, accomm, school, teach, split, blocks)) "daily-simple" using \
 		($56): \
 		($2 ): \
 		($58): \
@@ -42,7 +44,7 @@ fit log(f(area, work, home, retail, accomm, school, teach, major, blocks)) "dail
 		($26): \
 		($62): \
 		($23): \
-		($65): \
+		($61): \
 		($60): \
 		(log($1)) \
 	via \
@@ -52,6 +54,7 @@ fit log(f(area, work, home, retail, accomm, school, teach, major, blocks)) "dail
 		accomm_weight, accomm_exp, \
 		school_weight, school_exp, \
 		blocks_exp, \
+		split_exp, \
 		scale, \
 		intercept
 
@@ -63,7 +66,7 @@ stats "daily-simple" using (log(f( \
 		($26), \
 		($62), \
 		($23), \
-		($65), \
+		($61), \
 		($60) \
 	))):(log($1))
 
@@ -78,6 +81,6 @@ plot "daily-simple" using ((f( \
 		($26), \
 		($62), \
 		($23), \
-		($65), \
+		($61), \
 		($60) \
 	))):(($1)) with points ps .3, area title ""
