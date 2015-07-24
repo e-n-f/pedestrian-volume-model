@@ -10,17 +10,19 @@ set dummy area, work, home, retail, accomm, school, teach, major, blocks
 f(area, work, home, retail, accomm, school, teach, major, blocks) = \
 	( \
 		log( \
-			abs( \
-				(work_weight) * (exp(work) / exp(area)) ** work_exp + \
-				(exp(home) / exp(area)) ** home_exp + \
-				(retail_weight) * (exp(retail) / exp(area)) ** retail_exp + \
-				(accomm_weight) * (exp(accomm) / exp(area)) ** accomm_exp + \
-				(school_weight) * (exp(school) / 200) ** school_exp + \
-				(teach_weight) * (exp(teach) / exp(area)) ** teach_exp + \
-				0 \
-			) * \
-			(exp(blocks) / exp(area)) ** blocks_exp \
-		) * scale + intercept \
+			( \
+				abs( \
+					(work_weight) * (exp(work) / exp(area)) ** work_exp + \
+					(exp(home) / exp(area)) ** home_exp + \
+					(retail_weight) * (exp(retail) / exp(area)) ** retail_exp + \
+					(accomm_weight) * (exp(accomm) / exp(area)) ** accomm_exp + \
+					(school_weight) * (exp(school) / 200) ** school_exp + \
+					(teach_weight) * (exp(teach) / exp(area)) ** teach_exp + \
+					0 \
+				) * \
+				(exp(blocks) / exp(area)) ** blocks_exp \
+			) ** scale \
+		) + intercept \
 	)
 
 work_weight     = 0.23769
