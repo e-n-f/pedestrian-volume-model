@@ -8,22 +8,18 @@ set ylabel "Measured daily pedestrian volume"
 set dummy area, work, home, retail, accomm, school, teach, major, blocks
 
 f(area, work, home, retail, accomm, school, teach, major, blocks) = \
+	intercept * \
 	( \
 		( \
-			intercept * \
-			( \
-				( \
-					work_weight * (work / area) ** work_exp + \
-					(home / area) ** home_exp + \
-					retail_weight * (retail / area) ** retail_exp + \
-					accomm_weight * (accomm / area) ** accomm_exp + \
-					school_weight * (school / 200) ** school_exp + \
-					0 \
-				) * \
-				(blocks / area) ** blocks_exp \
-			) ** scale \
-		) \
-	)
+			work_weight * (work / area) ** work_exp + \
+			(home / area) ** home_exp + \
+			retail_weight * (retail / area) ** retail_exp + \
+			accomm_weight * (accomm / area) ** accomm_exp + \
+			school_weight * (school / 200) ** school_exp + \
+			0 \
+		) * \
+		(blocks / area) ** blocks_exp \
+	) ** scale
 
 work_weight     = 0.197892
 work_exp        = 0.490142
