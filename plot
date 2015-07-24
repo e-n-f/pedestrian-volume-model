@@ -10,6 +10,7 @@ set dummy area, work, home, retail, accomm, school, teach, major, blocks
 f(area, work, home, retail, accomm, school, teach, major, blocks) = \
 	( \
 		log( \
+			intercept * \
 			( \
 				abs( \
 					(work_weight) * (exp(work) / exp(area)) ** work_exp + \
@@ -22,7 +23,7 @@ f(area, work, home, retail, accomm, school, teach, major, blocks) = \
 				) * \
 				(exp(blocks) / exp(area)) ** blocks_exp \
 			) ** scale \
-		) + intercept \
+		) \
 	)
 
 work_weight     = 0.23769
@@ -38,7 +39,7 @@ teach_weight    = 0.0130839
 teach_exp       = 0.0868445
 blocks_exp      = 0.100841
 scale           = 2.56183
-intercept       = 17.2945
+intercept       = 3.24574e+07
 
 fit f(area, work, home, retail, accomm, school, teach, major, blocks) "daily-simple" using \
 		(log($56 + epsilon)): \
