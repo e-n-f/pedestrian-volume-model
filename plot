@@ -9,7 +9,7 @@ set dummy area, work, home, retail, accomm, school, teach, major, blocks
 
 f(area, work, home, retail, accomm, school, teach, major, blocks) = \
 	( \
-		log( \
+		( \
 			intercept * \
 			( \
 				( \
@@ -38,7 +38,7 @@ blocks_exp      = 0.0975083
 scale           = 2.22845
 intercept       = 6.48681e+06
 
-fit f(area, work, home, retail, accomm, school, teach, major, blocks) "daily-simple" using \
+fit log(f(area, work, home, retail, accomm, school, teach, major, blocks)) "daily-simple" using \
 		($56): \
 		($2 ): \
 		($58): \
@@ -59,7 +59,7 @@ fit f(area, work, home, retail, accomm, school, teach, major, blocks) "daily-sim
 		scale, \
 		intercept
 
-stats "daily-simple" using (f( \
+stats "daily-simple" using (log(f( \
 		($56), \
 		($2 ), \
 		($58), \
@@ -69,12 +69,12 @@ stats "daily-simple" using (f( \
 		($23), \
 		($65), \
 		($60) \
-	)):(log($1))
+	))):(log($1))
 
 set logscale xy
 set xrange [1:500000]
 set yrange [1:500000]
-plot "daily-simple" using (exp(f( \
+plot "daily-simple" using ((f( \
 		($56), \
 		($2 ), \
 		($58), \
