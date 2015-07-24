@@ -22,19 +22,19 @@ f(area, work, home, retail, accomm, school, teach, split, blocks) = \
 		) \
 	) ** scale
 
-work_weight     = 0.176085
-work_exp        = 0.494188
-home_exp        = 0.70727
-retail_weight   = 69.135
-retail_exp      = 1.54169
-accomm_weight   = 5.52831
-accomm_exp      = 0.949495
-school_weight   = 1.71035
-school_exp      = 0.876242
-blocks_exp      = 0.187143
-split_exp       = 0.192465
-scale           = 2.18694
-intercept       = 7.59384e+06
+work_weight     = 0.163914
+work_exp        = 0.516677
+home_exp        = 0.734183
+retail_weight   = 73.3749
+retail_exp      = 1.59263
+accomm_weight   = 5.51057
+accomm_exp      = 0.966511
+school_weight   = 1.71747
+school_exp      = 0.903968
+blocks_exp      = 0.102755
+split_exp       = 0.134661
+scale           = 2.08934
+intercept       = 3.46034e+06
 
 fit log(f(area, work, home, retail, accomm, school, teach, split, blocks)) "daily-simple" using \
 		($56): \
