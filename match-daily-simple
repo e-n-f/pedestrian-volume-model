@@ -4,6 +4,26 @@ $pi = 4 * atan2(1, 1);
 $foot = .00000274;
 $bucket = 5280 * $foot;
 
+sub rnd {
+        my ($mean, $stddev) = @_;
+
+        if ($haveSpare) {
+                $haveSpare = 0;
+                return ($stddev * sqrt($rand1) * sin($rand2)) + $mean;
+        }
+
+        $haveSpare = 1;
+
+        $rand1 = rand(1);
+        if ($rand1 < 1e-100) {
+                $rand1 = 1e-100;
+        }
+        $rand1 = -2 * log($rand1);
+        $rand2 = rand(1) * $pi * 2;
+
+        return ($stddev * sqrt($rand1) * cos($rand2)) + $mean;
+}
+
 $| = 1;
 
 open(IN, "../traffic/daily-traffic-counts/daily/daily.csv");
@@ -12,6 +32,11 @@ while (<IN>) {
 	($id, $name, $id2, $date, $time, @fields) = split(/,/);
 	# next if /extrap/;
 	next if $fields[20] eq "";
+
+	$accuracy = 0;
+	if (/daily-accuracy:(.*),/) {
+		$accuracy = log($1);
+	}
 
 	$lat = $fields[20];
 	$lon = $fields[21];
@@ -51,6 +76,7 @@ while (<IN>) {
 	$drive{"$lat,$lon"} = $drive;
 	$major{"$lat,$lon"} = $major;
 	$minor{"$lat,$lon"} = $minor;
+	$fuzz{"$lat,$lon"} = $walk * exp(rnd(0, $accuracy));
 }
 close(IN);
 
@@ -185,6 +211,7 @@ for $where (sort(keys(%sum))) {
 		printf(" %.5f", $drive{$where});
 		printf(" %.5f", $major{$where});
 		printf(" %.5f", $minor{$where});
+		printf(" %.3f", $fuzz{$where});
 
 		print " $where $name{$where}";
 	}

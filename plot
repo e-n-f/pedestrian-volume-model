@@ -88,3 +88,5 @@ plot "daily-simple" using ((f( \
 		($61), \
 		($60) \
 	))):(($1)) with points ps .3, area title ""
+
+plot "daily-simple" using 67:1 with points ps .3, area title ""
