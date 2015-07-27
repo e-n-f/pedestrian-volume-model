@@ -4,18 +4,21 @@ use strict;
 
 my $epsilon = 1e-10;
 
-my $work_weight     = 0.621569;
-my $work_exp        = 1.05523;
-my $home_exp        = 1.35907;
-my $retail_weight   = 4.91751;
-my $retail_exp      = 2.89947;
-my $accomm_weight   = 10.2007;
-my $accomm_exp      = 1.20083;
-my $school_weight   = 1.59076;
-my $school_exp      = 1.08525;
-my $teach_weight    = 1.7561;
-my $teach_exp       = 0.969141;
-my $intercept       = 5.47161;
+my $work_weight     = 0.145122;
+my $work_exp        = 0.503554;
+my $home_exp        = 0.736426;
+my $retail_weight   = 120.393;
+my $retail_exp      = 1.69453;
+my $accomm_weight   = 5.22701;
+my $accomm_exp      = 0.954203;
+my $school_weight   = 1.68478;
+my $school_exp      = 0.9056;
+my $teach_weight    = 0.283972;
+my $teach_exp       = 0.73152;
+my $blocks_exp      = 0.0871;
+my $split_exp       = 0.135828;
+my $scale           = 2.08978;
+my $intercept       = 2.98557e+06;
 
 sub fpow {
 	my ($base, $exp) = @_;
@@ -28,18 +31,22 @@ sub fpow {
 }
 
 sub f {
-	my ($work, $home, $retail, $accomm, $school, $teach) = @_;
+	my ($area, $work, $home, $retail, $accomm, $school, $teach, $split, $blocks) = @_;
 
-	return
-        log(
-                abs($work_weight) * fpow(exp($work), $work_exp) +
-                fpow(exp($home), $home_exp) +
-                abs($retail_weight) * fpow(exp($retail), $retail_exp) +
-                abs($accomm_weight) * fpow(exp($accomm), $accomm_exp) +
-                abs($school_weight) * fpow(exp($school), $school_exp) +
-                abs($teach_weight) * fpow(exp($teach), $teach_exp) +
-	0) +
-        $intercept;
+	return $intercept *
+        fpow($blocks / $area, abs($blocks_exp)) *
+        fpow(log(abs(2 - $split) + $epsilon), abs($split_exp)) *
+        fpow(
+                (
+                        $work_weight * fpow($work / $area, abs($work_exp)) +
+                        fpow($home / $area, abs($home_exp)) +
+                        $retail_weight * fpow($retail / $area, abs($retail_exp)) +
+                        $accomm_weight * fpow($accomm / $area, abs($accomm_exp)) +
+                        $school_weight * fpow($school / 200, abs($school_exp)) +
+                        $teach_weight * fpow($teach / $area, abs($teach_exp)) +
+                        0
+                ),
+	abs($scale));
 }
 
 while (<>) {
@@ -47,8 +54,8 @@ while (<>) {
 	my @fields = split(/ /);
 
 	my $actual = ($fields[0]);
-	my $model = exp(f(log($fields[1] + $epsilon), log($fields[57] + $epsilon), log($fields[14] + $epsilon), log($fields[25] + $epsilon), log($fields[61] + $epsilon), log($fields[22] + $epsilon)));
+	my $model = (f($fields[55], $fields[1], $fields[57], $fields[14], $fields[25], $fields[61], $fields[22], $fields[60], $fields[59]));
 
 	printf("%.6f ", $actual / $model);
-	print "$actual $model $fields[62]\n";
+	print "$actual $model $fields[67]\n";
 }
