@@ -8,7 +8,7 @@ set ylabel "Measured daily pedestrian volume"
 set dummy area, work, home, retail, accomm, school, teach, split, blocks
 
 f(area, work, home, retail, accomm, school, teach, split, blocks) = \
-	intercept * \
+	abs(intercept) * \
 	(blocks / area) ** abs(blocks_exp) * \
 	log(abs(2 - split) + epsilon) ** abs(split_exp) * \
 	( \
@@ -77,6 +77,7 @@ stats "daily-simple" using (log(f( \
 set logscale xy
 set xrange [1:500000]
 set yrange [1:500000]
+
 plot "daily-simple" using ((f( \
 		($56), \
 		($2 ), \
