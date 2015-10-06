@@ -4,6 +4,8 @@ $pi = 4 * atan2(1, 1);
 $foot = .00000274;
 $bucket = 5280 * $foot;
 
+srand(0);
+
 sub rnd {
         my ($mean, $stddev) = @_;
 
