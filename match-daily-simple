@@ -78,6 +78,7 @@ while (<IN>) {
 	$drive{"$lat,$lon"} = $drive;
 	$major{"$lat,$lon"} = $major;
 	$minor{"$lat,$lon"} = $minor;
+	srand($walk + $lat + $lon);
 	$fuzz{"$lat,$lon"} = $walk * exp(rnd(0, $accuracy));
 }
 close(IN);
