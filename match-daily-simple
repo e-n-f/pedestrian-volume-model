@@ -9,7 +9,7 @@ srand(0);
 sub rnd {
         my ($mean, $stddev) = @_;
 
-        if ($haveSpare) {
+        if (0 || $haveSpare) {
                 $haveSpare = 0;
                 return ($stddev * sqrt($rand1) * sin($rand2)) + $mean;
         }
