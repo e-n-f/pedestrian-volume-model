@@ -1,0 +1,8 @@
+#!/usr/bin/perl
+
+open(IN, "sort -t, -n -k3 pedestrian-trips.csv |");
+while (<IN>) {
+	($count, $who, $dist, $rest) = split(/,/);
+	$here += $count;
+	print "$here $dist\n";
+}
