@@ -17,4 +17,17 @@
 1,M,60,car,Posh Bagel to car through passage
 1,F,16,store,Posh Bagel to Homestead
 1,F,146,car,Peet's to car in Piedmont Groc lot
-1,M,800?,home,Piedmont Grocery to Fairmount/MacArthur via Yosemite
+1,M,800+,home,Piedmont Grocery to Fairmount/MacArthur via Yosemite
+1,F,584,home,CVS to 42xx Terrace
+2,Mm,147,store,Kronenburger to Dr Comics
+1,M,160,car,Piedmont Groc to car at 40 Glen
+2,MF,196,store,Piedmont Groc to Discover Shop
+2,MF,56,store,Piedmont Groc to Monte Vista Foods
+2,MF,225,store,Piedmont Groc to Pet Food Express
+2,MF,772+,home,Pet Food Express to MacArthur beyond Harrison via Yosemite
+2,MF,282,car,Car at Sol Performance to La Farine
+2,MF,148,store,La Farine to Lush
+1,M,110,store,Peet's to Wells Fargo
+1,M,30,store,Cesar to Homestead
+1,M,57,car,Car at Homestead to Wells Fargo
+2,MF,960,home,Peet's to Montgomery above John

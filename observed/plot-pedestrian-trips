@@ -3,28 +3,20 @@ set terminal postscript
 boxcox(x, l) = (x ** l - 1) / l
 cdf(x, a, u, o, l) = a * (.5 + .5 * erf((boxcox(x, l) - boxcox(u, l)) / (sqrt(2) * boxcox(o, l))))
 
-a               = 3.02445 
-u               = 49.2988 
-o               = 1.22846 
-l               = 0.105507
-a1              = 16.7296 
-u1              = 195.768 
-o1              = 1.00035 
-l1              = -1.3247 
-a2              = 4.7103  
-u2              = 1029.79 
-o2              = 1.13626 
-l2              = 0.125402
-
-set yrange [0:28]
-set xrange [10:10000]
+a               = 67.119
+u               = 747.569
+o               = 1.06417
+l               = -0.551007
 
 set logscale x
 
 set xlabel "Walking distance (feet)"
 set ylabel "Cumulative pedestrians"
 
-fit cdf(x, a, u, o, l) + cdf(x, a1, u1, o1, l1) + cdf(x, a2, u2, o2, l2) "pedestrian-trips" using ($2 * 2.9):1 via a, u, o, l, a1, u1, o1, l1, a2, u2, o2, l2
-plot "pedestrian-trips" using ($2 * 2.9):1, cdf(x,3,49,1.2,.1) + cdf(x,16.7,196,1.00035,-1.3247) + cdf(x,4.7,1030,1.14,0.125402)
+fit cdf(x, a, u, o, l) "pedestrian-trips" using ($2 * 2.9):1 via a, u, o, l
+
+set xrange [10:10000]
+
+plot "pedestrian-trips" using ($2 * 2.9):1, cdf(x, 67.119, 747.569, 1.06417, -0.551007)
 
 
