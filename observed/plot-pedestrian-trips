@@ -19,4 +19,10 @@ set xrange [10:10000]
 
 plot "pedestrian-trips" using ($2 * 2.9):1, cdf(x, 67.119, 747.569, 1.06417, -0.551007)
 
+unset logscale x
+
+pdf(x, a, u, o, l) = a * (x ** (l - 1)) / (boxcox(o, l) * sqrt(2 * pi)) * exp(- (boxcox(x, l) - boxcox(u, l)) ** 2 / (2 * boxcox(o, l) ** 2))
+set xrange [0:3000]
+plot pdf(x, 67.119, 747.569, 1.06417, -0.551007)
+
 
