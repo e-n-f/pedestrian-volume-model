@@ -4,6 +4,8 @@ $pi = 4 * atan2(1, 1);
 $foot = .00000274;
 $bucket = 5280 * $foot;
 
+$theradius = 1000;
+
 srand(0);
 
 sub rnd {
@@ -122,7 +124,7 @@ while (<IN>) {
 			if ($d < $bucket) {
 				$d = int($d / $foot);
 
-				for $radius (1000) {
+				for $radius ($theradius) {
 					if ($d < 3 * $radius) {
 						$weight = 1 / ($radius * sqrt(2 * $pi)) * exp(- ($d * $d) / (2 * $radius * $radius));
 
@@ -179,7 +181,7 @@ while (<IN>) {
 			if ($d < $bucket) {
 				$d = int($d / $foot);
 
-				for $radius (1000) {
+				for $radius ($theradius) {
 					if ($d < 3 * $radius) {
 						$weight = 1 / ($radius * sqrt(2 * $pi)) * exp(- ($d * $d) / (2 * $radius * $radius));
 
@@ -200,7 +202,7 @@ for $where (sort(keys(%sum))) {
 
 	printf("%d", $walk{$where});
 
-	for $radius (1000) {
+	for $radius ($theradius) {
 		for ($field = 2; $field <= 59; $field++) {
 			printf(" %f", $sum{$where}{$field}{$radius});
 		}
