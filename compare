@@ -4,21 +4,20 @@ use strict;
 
 my $epsilon = 1e-10;
 
-my $work_weight     = 0.145122;
-my $work_exp        = 0.503554;
-my $home_exp        = 0.736426;
-my $retail_weight   = 120.393;
-my $retail_exp      = 1.69453;
-my $accomm_weight   = 5.22701;
-my $accomm_exp      = 0.954203;
-my $school_weight   = 1.68478;
-my $school_exp      = 0.9056;
-my $teach_weight    = 0.283972;
-my $teach_exp       = 0.73152;
-my $blocks_exp      = 0.0871;
-my $split_exp       = 0.135828;
-my $scale           = 2.08978;
-my $intercept       = 2.98557e+06;
+my $work_weight     = 0.0964037;
+my $work_exp        = 0.379919;
+my $home_exp        = 0.739806;
+my $retail_weight   = 43.8294;
+my $retail_exp      = 1.48386;
+my $accomm_weight   = 7.14946;
+my $accomm_exp      = 0.965433;
+my $school_weight   = 0.86146;
+my $school_exp      = 0.774459;
+my $teach_weight    = 0.27613;
+my $teach_exp       = 0.729509;
+my $blocks_exp      = 0.223233;
+my $scale           = 2.20189;
+my $intercept       = 8.88599e+06;
 
 sub fpow {
 	my ($base, $exp) = @_;
@@ -33,9 +32,8 @@ sub fpow {
 sub f {
 	my ($area, $work, $home, $retail, $accomm, $school, $teach, $split, $blocks) = @_;
 
-	return $intercept *
+	return abs($intercept) *
         fpow($blocks / $area, abs($blocks_exp)) *
-        fpow(log(abs(2 - $split) + $epsilon), abs($split_exp)) *
         fpow(
                 (
                         $work_weight * fpow($work / $area, abs($work_exp)) +
