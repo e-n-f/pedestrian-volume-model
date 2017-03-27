@@ -2,22 +2,22 @@
 
 use strict;
 
-my $epsilon = 1e-10;
-
-my $work_weight     = 0.0964037;
-my $work_exp        = 0.379919;
-my $home_exp        = 0.739806;
-my $retail_weight   = 43.8294;
-my $retail_exp      = 1.48386;
-my $accomm_weight   = 7.14946;
-my $accomm_exp      = 0.965433;
-my $school_weight   = 0.86146;
-my $school_exp      = 0.774459;
-my $teach_weight    = 0.27613;
-my $teach_exp       = 0.729509;
-my $blocks_exp      = 0.223233;
-my $scale           = 2.20189;
-my $intercept       = 8.88599e+06;
+my $work_weight     = 0.0582971;
+my $work_exp        = 0.413058;
+my $home_exp        = 0.839656;
+my $retail_weight   = 49.8593;
+my $retail_exp      = 1.548;
+my $accomm_weight   = 3.00466;
+my $accomm_exp      = 0.91199;
+my $school_weight   = 0.246916;
+my $school_exp      = 0.688558;
+my $teach_weight    = 0.29323;
+my $teach_exp       = 0.716993;
+my $stops_weight    = 57.0325;
+my $stops_exp       = 0.892148;
+my $blocks_exp      = 0.132785;
+my $scale           = 1.78344;
+my $intercept       = 1.5337e+06;
 
 sub fpow {
 	my ($base, $exp) = @_;
@@ -30,10 +30,11 @@ sub fpow {
 }
 
 sub f {
-	my ($area, $work, $home, $retail, $accomm, $school, $teach, $split, $blocks) = @_;
+	my ($area, $work, $home, $retail, $accomm, $school, $teach, $split, $blocks, $stops) = @_;
 
 	return abs($intercept) *
         fpow($blocks / $area, abs($blocks_exp)) *
+	(1 + abs($stops_weight) * fpow($stops, abs($stops_exp))) *
         fpow(
                 (
                         $work_weight * fpow($work / $area, abs($work_exp)) +
@@ -52,8 +53,8 @@ while (<>) {
 	my @fields = split(/ /);
 
 	my $actual = ($fields[0]);
-	my $model = (f($fields[55], $fields[1], $fields[57], $fields[14], $fields[25], $fields[61], $fields[22], $fields[60], $fields[59]));
+	my $model = (f($fields[55], $fields[1], $fields[57], $fields[14], $fields[25], $fields[61], $fields[22], $fields[60], $fields[59], $fields[67]));
 
 	printf("%.6f ", $actual / $model);
-	print "$actual $model $fields[67]\n";
+	print "$actual $model $fields[68]\n";
 }
