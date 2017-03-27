@@ -1,0 +1,62 @@
+#!/usr/bin/perl
+
+# for i in gtfs/*.zip; do if unzip -p "$i" stops.txt | ./get-stops; then :; else echo $i >&2; fi; done > stops.csv
+
+sub csv {
+	my $line = $_[0];
+
+	chomp $line;
+	$line =~ s/\015//;
+
+	my @ret = ();
+	my $n = 0;
+	my $quoted = 0;
+
+	while ($line ne "") {
+		if ($line =~ s/^""//) {
+			$ret[$n] .= '"';
+		} elsif ($line =~ s/^"//) {
+			$quoted = !$quoted;
+		} elsif ($line =~ s/^,//) {
+			if ($quoted) {
+				$ret[$n] .= ',';
+			} else {
+				$n++;
+			}
+		} else {
+			$line =~ s/^([^",]*)//;
+			$ret[$n] .= $1;
+		}
+	}
+
+	for (my $i = 0; $i <= $#ret; $i++) {
+		$ret[$i] =~ s/^ *//;
+	}
+
+	return @ret;
+}
+
+$lat = -1;
+$lon = -1;
+
+$line = <>;
+chomp $line;
+@fields = csv($line);
+
+for ($i = 0; $i <= $#fields; $i++) {
+	if ($fields[$i] eq "stop_lat") {
+		$lat = $i;
+	} elsif ($fields[$i] eq "stop_lon") {
+		$lon = $i;
+	}
+}
+
+if ($lat < 0 || $lon < 0) {
+	die "can't find lat/lon fields";
+}
+
+while (<>) {
+	@fields = csv($_);
+
+	print "$fields[$lat],$fields[$lon],1\n";
+}

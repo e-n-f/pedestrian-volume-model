@@ -196,6 +196,55 @@ while (<IN>) {
 	}
 }
 
+$seq = 0;
+open(IN, "stops.csv");
+while (<IN>) {
+	chomp;
+	@fields = split(/,/);
+
+	($lat, $lon) = ($fields[0], $fields[1]);
+
+	if ($seq++ % 10000 == 0) {
+		printf STDERR ("stops %.2f\r", $seq / 141445 * 100);
+	}
+
+	$a = int($lat / $bucket);
+	$o = int($lon / $bucket);
+
+	@candidates = ();
+	for ($aa = $a - 1; $aa <= $a + 1; $aa++) {
+		for ($oo = $o - 1; $oo <= $o + 1; $oo++) {
+			push @candidates, @{$near{$aa}{$oo}};
+		}
+	}
+
+	if ($#candidates >= 0) {
+		$rat = cos($lat * $pi / 180);
+
+		for $cand (@candidates) {
+			($lat2, $lon2) = split(/,/, $cand);
+
+			$latd = $lat2 - $lat;
+			$lond = ($lon2 - $lon) * $rat;
+			$d = sqrt($latd * $latd + $lond * $lond);
+
+			if ($d < $bucket) {
+				$d = int($d / $foot);
+
+				for $radius ($theradius) {
+					if ($d < 3 * $radius) {
+						$weight = 1 / ($radius * sqrt(2 * $pi)) * exp(- ($d * $d) / (2 * $radius * $radius));
+
+						# print STDERR "distance $distance weight $weight\n";
+
+						$sum{$cand}{64}{$radius} += $weight;
+					}
+				}
+			}
+		}
+	}
+}
+
 for $where (sort(keys(%sum))) {
 	next if ($walk{$where} == 0); # || $drive{$where} == 0);
 	next if $state{$where} =~ /^25/; # massachusetts lehd broken
@@ -217,6 +266,7 @@ for $where (sort(keys(%sum))) {
 		printf(" %.5f", $major{$where});
 		printf(" %.5f", $minor{$where});
 		printf(" %.3f", $fuzz{$where});
+		printf(" %f", $sum{$where}{64}{$radius});
 
 		print " $where $name{$where}";
 	}
