@@ -237,7 +237,10 @@ while (<IN>) {
 
 						# print STDERR "distance $distance weight $weight\n";
 
-						$sum{$cand}{64}{$radius} += $weight;
+						# Don't include this as a multiplier if there is no source of base value
+						if (defined($sum{$cand})) {
+							$sum{$cand}{64}{$radius} += $weight;
+						}
 					}
 				}
 			}
