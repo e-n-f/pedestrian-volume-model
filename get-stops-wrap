@@ -1,0 +1,19 @@
+#!/bin/sh
+
+(
+	for i in gtfs/*.zip
+	do
+		if unzip -p "$i" stops.txt | ./get-stops
+		then :
+		else echo $i >&2
+		fi
+	done
+
+	for i in ../gtfs_lax/*
+	do
+		if cat "$i"/stops.txt | ./get-stops
+		then :
+		else echo $i >&2
+		fi
+	done
+) > stops.csv
