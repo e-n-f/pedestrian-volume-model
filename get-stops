@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use POSIX;
+
 # for i in gtfs/*.zip; do if unzip -p "$i" stops.txt | ./get-stops; then :; else echo $i >&2; fi; done > stops.csv
 
 sub csv {
@@ -35,6 +37,67 @@ sub csv {
 
 	return @ret;
 }
+
+# print STDERR "Usage: $0 calendar.txt stops.txt stop_times.txt\n";
+
+$maxwhen = "";
+
+open(IN, "$ARGV[0]");
+$line = <IN>;
+@fields = csv($line);
+for ($i = 0; $i <= $#fields; $i++) {
+	$col{$fields[$i]} = $i;
+	# print "$fields[$i] $col{$fields[$i]}\n";
+}
+while (<IN>) {
+	@fields = csv($_);
+	$service_id = $fields[$col{'service_id'}];
+	$start_date = $fields[$col{'start_date'}];
+	$end_date = $fields[$col{'end_date'}];
+	$wednesday = $fields[$col{'wednesday'}];
+
+	if ($end_date =~ /(....)(..)(..)/) {
+		$t = POSIX::mktime(0, 0, 12, $3, $2 - 1, $1 - 1900, -1, -1, -1);
+
+		if ($t > time) {
+			$t = time;
+		}
+
+		($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime($t);
+		while ($wday != 3 && $wday != 3 - 7) {
+			# printf("%d %d %d is %d\n", $year + 1900, $mon + 1, $mday, $wday);
+
+			$wday--;
+			$t -= 86400;
+			($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime($t);
+		}
+		$when = sprintf("%04d%02d%02d", $year + 1900, $mon + 1, $mday);
+
+		if ($when gt $maxwhen) {
+			$maxwhen = $when;
+		}
+	} else {
+		die "Don't know what to do with $end_date";
+	}
+
+	if ($wednesday) {
+		$start_date{$service_id} = $start_date;
+		$end_date{$service_id} = $end_date;
+	}
+}
+close(IN);
+
+@services = ();
+for $service (keys(%start_date)) {
+	if ($maxwhen ge $start_date{$service} && $maxwhen le $end_date{$service}) {
+		push @services, $service;
+		print STDERR "Keep $service\n";
+	} else {
+		print STDERR "Exclude $service\n";
+	}
+}
+
+exit(0);
 
 $lat = -1;
 $lon = -1;
