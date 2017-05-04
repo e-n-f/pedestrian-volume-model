@@ -2,7 +2,7 @@
 
 use POSIX;
 
-# for i in gtfs/*.zip; do ./get-stops <(unzip -p "$i" calendar.txt) <(unzip -p "$i" calendar_dates.txt) <(unzip -p "$i" stops.txt) <(unzip -p "$i" stop_times.txt); done > stops.csv
+# for i in gtfs/*.zip; do ./get-stops <(unzip -p "$i" calendar.txt) <(unzip -p "$i" calendar_dates.txt) <(unzip -p "$i" routes.txt) <(unzip -p "$i" trips.txt) <(unzip -p "$i" frequencies.txt) <(unzip -p "$i" stops.txt) <(unzip -p "$i" stop_times.txt); done > stops.csv
 
 sub csv {
 	my $line = $_[0];
@@ -38,7 +38,9 @@ sub csv {
 	return @ret;
 }
 
-# print STDERR "Usage: $0 calendar.txt calendar_dates.txt stops.txt stop_times.txt\n";
+# print STDERR "Usage: $0 calendar.txt calendar_dates.txt routes.txt stops.txt stop_times.txt\n";
+
+print "#####\n";
 
 $maxwhen = "";
 
@@ -95,6 +97,8 @@ for ($i = 0; $i <= $#fields; $i++) {
 	# print "$fields[$i] $col{$fields[$i]}\n";
 }
 while (<IN>) {
+	next if /^$/;
+
 	@fields = csv($_);
 	$service_id = $fields[$col{'service_id'}];
 	$date = $fields[$col{'date'}];
@@ -124,10 +128,26 @@ while (<IN>) {
 			}
 		}
 	} else {
-		die "Don't know what to do with $date";
+		if ($date ne "") {
+			die "Don't know what to do with $date $service_id $exception_type";
+		}
 	}
 }
 close(IN);
+
+open(IN, "$ARGV[2]"); # routes.txt
+$line = <IN>;
+@fields = csv($line);
+for ($i = 0; $i <= $#fields; $i++) {
+	$col{$fields[$i]} = $i;
+	# print "$fields[$i] $col{$fields[$i]}\n";
+}
+while (<IN>) {
+	@fields = csv($_);
+	$route_id = $fields[$col{'route_id'}];
+	$route_type = $fields[$col{'route_type'}];
+	$route_type{$route_id} = $route_type;
+}
 
 %dates = ();
 for (keys(%start_date)) {
@@ -137,14 +157,59 @@ for (keys(%date_add)) {
 	$dates{$_} = 1;
 }
 
-@services = ();
+%services = ();
 for $service (keys(%dates)) {
 	if (($maxwhen ge $start_date{$service} && $maxwhen le $end_date{$service} && $date_sub{$service}{$maxwhen} == 0) || $date_add{$service}{$maxwhen}) {
-		push @services, $service;
-		print STDERR "Keep $service for $maxwhen\n";
+		$services{$service} = 1;
+		# print STDERR "Keep $service for $maxwhen\n";
 	} else {
-		print STDERR "Exclude $service ($maxwhen not in $start_date{$service} to $end_date{$service})\n";
+		# print STDERR "Exclude $service ($maxwhen not in $start_date{$service} to $end_date{$service})\n";
 	}
+}
+
+open(IN, "$ARGV[3]"); # trips.txt
+$line = <IN>;
+@fields = csv($line);
+for ($i = 0; $i <= $#fields; $i++) {
+	$col{$fields[$i]} = $i;
+	# print "$fields[$i] $col{$fields[$i]}\n";
+}
+while (<IN>) {
+	@fields = csv($_);
+	$route_id = $fields[$col{'route_id'}];
+	$service_id = $fields[$col{'service_id'}];
+	$trip_id = $fields[$col{'trip_id'}];
+
+	if ($services{$service_id}) {
+		$trip_type{$trip_id} = $route_type{$route_id};
+	}
+}
+
+open(IN, "$ARGV[4]"); # frequencies.txt
+$line = <IN>;
+@fields = csv($line);
+for ($i = 0; $i <= $#fields; $i++) {
+	$col{$fields[$i]} = $i;
+	# print "$fields[$i] $col{$fields[$i]}\n";
+}
+while (<IN>) {
+	@fields = csv($_);
+	$trip_id = $fields[$col{'trip_id'}];
+	$start_time = $fields[$col{'start_time'}];
+	$end_time = $fields[$col{'end_time'}];
+	$headway_secs = $fields[$col{'headway_secs'}];
+
+	$start = 0;
+	if ($start_time =~ /(\d+):(\d+):(\d+)/) {
+		$start = $1 * 3600 + $2 * 60 + $3;
+	}
+	$end = 0;
+	if ($end_time =~ /(\d+):(\d+):(\d+)/) {
+		$end = $1 * 3600 + $2 * 60 + $3;
+	}
+	$freq{$trip_id} += ($end - $start) / $headway_secs;
+
+	# print "frequency of $trip_id: $freq{$trip_id} $headway_secs from $start ($start_time) to $end ($end_time)\n";
 }
 
 exit(0);
