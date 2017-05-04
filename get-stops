@@ -2,7 +2,7 @@
 
 use POSIX;
 
-# for i in gtfs/*.zip; do if unzip -p "$i" stops.txt | ./get-stops; then :; else echo $i >&2; fi; done > stops.csv
+# for i in gtfs/*.zip; do ./get-stops <(unzip -p "$i" calendar.txt) <(unzip -p "$i" calendar_dates.txt) <(unzip -p "$i" stops.txt) <(unzip -p "$i" stop_times.txt); done > stops.csv
 
 sub csv {
 	my $line = $_[0];
@@ -38,7 +38,7 @@ sub csv {
 	return @ret;
 }
 
-# print STDERR "Usage: $0 calendar.txt stops.txt stop_times.txt\n";
+# print STDERR "Usage: $0 calendar.txt calendar_dates.txt stops.txt stop_times.txt\n";
 
 $maxwhen = "";
 
@@ -87,13 +87,63 @@ while (<IN>) {
 }
 close(IN);
 
-@services = ();
-for $service (keys(%start_date)) {
-	if ($maxwhen ge $start_date{$service} && $maxwhen le $end_date{$service}) {
-		push @services, $service;
-		print STDERR "Keep $service\n";
+open(IN, "$ARGV[1]"); # calendar_dates.txt
+$line = <IN>;
+@fields = csv($line);
+for ($i = 0; $i <= $#fields; $i++) {
+	$col{$fields[$i]} = $i;
+	# print "$fields[$i] $col{$fields[$i]}\n";
+}
+while (<IN>) {
+	@fields = csv($_);
+	$service_id = $fields[$col{'service_id'}];
+	$date = $fields[$col{'date'}];
+	$exception_type = $fields[$col{'exception_type'}];
+
+	if ($date =~ /(....)(..)(..)/) {
+		$t = POSIX::mktime(0, 0, 12, $3, $2 - 1, $1 - 1900, -1, -1, -1);
+
+		if ($t > time) {
+			$t = time;
+		}
+
+		($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime($t);
+		if ($wday == 3) {
+			$when = sprintf("%04d%02d%02d", $year + 1900, $mon + 1, $mday);
+
+			if ($when gt $maxwhen) {
+				$maxwhen = $when;
+			}
+
+			if ($exception_type eq "1") {
+				$date_add{$service_id}{$when} = 1;
+			} elsif ($exception_type eq "2") {
+				$date_sub{$service_id}{$when} = 1;
+			} else {
+				die "Don't know what to do with $exception_type";
+			}
+		}
 	} else {
-		print STDERR "Exclude $service\n";
+		die "Don't know what to do with $date";
+	}
+}
+close(IN);
+
+%dates = ();
+for (keys(%start_date)) {
+	$dates{$_} = 1;
+}
+for (keys(%date_add)) {
+	$dates{$_} = 1;
+}
+
+@services = ();
+for $service (keys(%dates)) {
+	if (($maxwhen ge $start_date{$service} && $maxwhen le $end_date{$service} && $date_sub{$service}{$maxwhen} == 0) || $date_add{$service}{$maxwhen}) {
+		push @services, $service;
+		print STDERR "Keep $service for $maxwhen\n";
+	} else {
+		print STDERR "Exclude $service ($maxwhen not in $start_date{$service} to $end_date{$service})\n";
 	}
 }
 
