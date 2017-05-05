@@ -212,6 +212,47 @@ while (<IN>) {
 	# print "frequency of $trip_id: $freq{$trip_id} $headway_secs from $start ($start_time) to $end ($end_time)\n";
 }
 
+open(IN, "$ARGV[5]"); # stops.txt
+$line = <IN>;
+@fields = csv($line);
+for ($i = 0; $i <= $#fields; $i++) {
+	$col{$fields[$i]} = $i;
+	# print "$fields[$i] $col{$fields[$i]}\n";
+}
+while (<IN>) {
+	@fields = csv($_);
+	$stop_id = $fields[$col{'stop_id'}];
+	$stop_lat = $fields[$col{'stop_lat'}];
+	$stop_lon = $fields[$col{'stop_lon'}];
+
+	$stop_lat{$stop_id} = $stop_lat;
+	$stop_lon{$stop_id} = $stop_lon;
+}
+
+open(IN, "$ARGV[6]"); # stop_times.txt
+$line = <IN>;
+@fields = csv($line);
+for ($i = 0; $i <= $#fields; $i++) {
+	$col{$fields[$i]} = $i;
+	# print "$fields[$i] $col{$fields[$i]}\n";
+}
+while (<IN>) {
+	@fields = csv($_);
+	$stop_id = $fields[$col{'stop_id'}];
+	$trip_id = $fields[$col{'trip_id'}];
+
+	$freq = 1;
+	if ($freq{$trip_id}) {
+		$freq = $freq{$trip_id};
+	}
+
+	$visits{$stop_id} += $freq;
+}
+
+for $stop (keys(%visits)) {
+	print "$stop_lat{$stop},$stop_lon{$stop},$visits{$stop}\n";
+}
+
 exit(0);
 
 $lat = -1;

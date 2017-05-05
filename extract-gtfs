@@ -1,0 +1,7 @@
+#!/bin/bash
+
+(
+	for i in gtfs/*.zip; do echo $i >&2; ./get-stops <(unzip -p "$i" calendar.txt) <(unzip -p "$i" calendar_dates.txt) <(unzip -p "$i" routes.txt) <(unzip -p "$i" trips.txt) <(unzip -p "$i" frequencies.txt) <(unzip -p "$i" stops.txt) <(unzip -p "$i" stop_times.txt); done
+
+	for i in ../gtfs_lax/*; do echo $i >&2; ./get-stops "$i/calendar.txt" "$i/calendar_dates.txt" "$i/routes.txt" "$i/trips.txt" "$i/frequencies.txt" "$i/stops.txt" "$i/stop_times.txt"; done
+) > stops.csv
