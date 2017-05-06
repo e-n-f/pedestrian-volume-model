@@ -25,22 +25,22 @@ f(area, work, home, retail, accomm, school, teach, split, blocks, stops) = \
 
 #	log(abs(2 - split) + epsilon) ** abs(split_exp) * \
 
-work_weight     = 0.0470586
-work_exp        = 0.358766
-home_exp        = 0.833155
-retail_weight   = 45.3638
-retail_exp      = 1.51917
-accomm_weight   = 3.43899
-accomm_exp      = 0.916848
-school_weight   = 0.252658
-school_exp      = 0.686353
-teach_weight    = 0.318222
-teach_exp       = 0.711528
-stops_weight    = 41.6992
-stops_exp       = 0.787956
-blocks_exp      = 0.147019
-scale           = 1.80457
-intercept       = 1.55157e+06
+work_weight     = 0.086042
+work_exp        = 0.37525
+home_exp        = 0.744601
+retail_weight   = 47.0099
+retail_exp      = 1.48033
+accomm_weight   = 3.95404
+accomm_exp      = 0.8853
+school_weight   = 0.37729
+school_exp      = 0.659622
+teach_weight    = 0.303156
+teach_exp       = 0.698606
+stops_weight    = 25.5382
+stops_exp       = 0.883672
+blocks_exp      = 0.194644
+scale           = 2.0684
+intercept       = 3.63692e+06
 
 fit log(f(area, work, home, retail, accomm, school, teach, split, blocks, stops)) "daily-simple" using \
 		($56): \
